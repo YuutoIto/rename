@@ -3,8 +3,13 @@ require './rename-core'
 require './simple-replace'
 require './argv-parser'
 
-#スペースを繰り返す時はエスケープが必要かも
-#when exists same filename, なんらかの対処
+=begin
+スペースを繰り返す時はエスケープが必要かも
+-n　を使った時文字列がマッチしなかった場合にもカウントアップされちゃう
+	gsubで複数マッチした時に同じファイルでは同じ数値を使用するように呼び出し時にgetを使用しているけれど
+	それをやめて@newwordオブジェクトを渡してgusbのブロックで実行させれば空読みがなくなるはず
+	
+=end
 
 class Renamer < ARGVParser
 	def initialize(argv)
@@ -13,28 +18,24 @@ class Renamer < ARGVParser
 
 	def parse
 		self.all_parse
-		p self.rename_option
-
 		@pathes  = TargetPathes.new(self.directory, :file)
 		@newword = NewWord.new(self.rename_option, @pathes.size)
 	end
 
 	def rename
-		newnames = []
-		@pathes.each do |name|
-			newname = simple_replace(name, self.target, @newword.get)
-			puts "#{name}  =>  #{newname}"
-			newnames.push(newname)
+		@pathes.set_name_pair do |oldname|
+			newname = simple_replace(oldname, self.target, @newword.str)
+			puts "#{oldname}  =>  #{newname}"
+			next newname
 		end
 
 		puts "Rename these? (y/N)"
 		case STDIN.gets.chomp
-		when "Y", "y", "YES", "yes"
-			@pathes.rename do |name|
-				newnames.shift
-			end
+		when /Y/i, /YES/i
+			@pathes.apply_name_pair
 		end
 	end
+
 end
 
 r = Renamer.new(ARGV)

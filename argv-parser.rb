@@ -1,30 +1,4 @@
-=begin USEGE
-opt = Parsers.new(ARGV)
-opt.all_parse
-#success return self
-#filed   exit
-
-other-optionsが未完成
-=end
-
-=begin
-rename directory target [options] rename-option [option's arguments]
-rename-options
-	-r STR replace the target to <str>
-	-e [NUM] erase the target
-	-n [NUM] 連続する数字に置き換える
-	-h,--help
-=end
-
-#ARGVから渡されるオプションは全て文字列
-#-h --help --versionはデフォで実装されているようだ　＃だがこれを使わない使えない
-
-#rename-methodはファイル名を引数にとって、変更後のファイル名を返す。
-#rename-method file-name argment#
 #引数の順序が自由なのは正常に動作するが、各オプションの省略できる引数を省略した場合、ユーザーが意図しない動作を起こす
-#よって順序はrename dir targ options option-argument の順を強制する
-#しかし処理の手順にしてはこの順序を考慮しないほうが楽なので現在の処理手順を継続する
-
 require 'optparse'
 
 #OptionParser::InvalidOptionを継承させたほうがいいかも
@@ -43,17 +17,17 @@ class ARGVParser
 	}
 	
 	@@HELP_MESSAGE = {
-		replace: "replace target to STR",
-		erase:   "erase target",
-		number:  "replace target to number"
+		replace: "replace target-string to STR",
+		erase:   "erase target-string",
+		number:  "replace target-string to countup number"
 	}
 
 	def initialize(argv)
-		@argv = argv
-		@rename_option = {}
-		@other_option  = []
-		@directory     = ""
-		@target        = ""
+		@argv = (argv.empty?)? ["-h"]: argv
+		@rename_option = Hash.new
+		@other_option  = Array.new
+		@directory     = String.new
+		@target        = String.new
 	end
 	
 	attr_reader :argv
@@ -62,13 +36,23 @@ class ARGVParser
 	attr_reader :directory
 	attr_reader :target
 
+	def debug_variable
+		puts "argv #{@argv}"
+		puts "rename_option #{@rename_option}"
+		puts "other_option  #{@other_option}"
+		puts "directory #{@directory}"
+		puts "target #{@target}"
+	end
+
 	#can access instance-variable using [:hash]
 	def [](symb)
 		self.send(symb)
 	end
 
+	#-y Yes/Noを尋ねないで実行
+	#-b バックアップを取る?
+
 	#This function returns a rename-option, and it's argument
-	#argvからrename-optionが取り抜かれる
 	#オプションの整合性判定はしない
 	def parse_rename_option
 		
@@ -102,31 +86,20 @@ class ARGVParser
 		return @rename_option
 	end
 
-	#-y Yes/Noを尋ねないで実行
-	#-b バックアップを取る?
-	#-h ヘルプを処理する
-	def parse_other_option
-		# parser = OptionParser.new
-		# parser.on('-y')
-		# parser.on('-h', '--help')
-	end
-
-	#Filed, when argv has the rest
 	def parse_dir_targ
-		if @argv.size < 2
+		if @argv.size <= 1
 			fail OptionFormatError, @@ERROR_MESSAGE[:enough]
-		elsif 2 < @argv.size
+		elsif 3 <= @argv.size
 			raise OptionFormatError, @@ERROR_MESSAGE[:many]
 		end
 
-	  @directory, @target = @argv.slice!(0,2)
+	  @directory, @target = @argv#.slice!(0,2)
 	end
 
 	#全てのパースと例外処理をやってくれる
 	def all_parse
 		begin
 			parse_rename_option
-			parse_other_option
 			parse_dir_targ
 			return self
 		rescue OptionFormatError  => ex

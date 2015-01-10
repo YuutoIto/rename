@@ -8,7 +8,6 @@ require './argv-parser'
 -n　を使った時文字列がマッチしなかった場合にもカウントアップされちゃう
 	gsubで複数マッチした時に同じファイルでは同じ数値を使用するように呼び出し時にgetを使用しているけれど
 	それをやめて@newwordオブジェクトを渡してgusbのブロックで実行させれば空読みがなくなるはず
-	
 =end
 
 class Renamer < ARGVParser
@@ -37,6 +36,7 @@ class Renamer < ARGVParser
 	end
 
 end
+
 
 r = Renamer.new(ARGV)
 r.parse

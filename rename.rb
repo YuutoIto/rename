@@ -1,7 +1,11 @@
 #!/usr/bin/ruby
-require './rename-core'
-require './simple-replace'
-require './argv-parser'
+
+EXEC_DIR = Dir.pwd
+Dir.chdir("#{ENV['HOME']}/code/ruby/rename")
+require "./rename-core"
+require "./simple-replace"
+require "./argv-parser"
+Dir.chdir(EXEC_DIR)
 
 =begin
 スペースを繰り返す時はエスケープが必要かも

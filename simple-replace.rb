@@ -50,6 +50,13 @@ end
 
 #filenameは改変される、戻り値も改変後の値を返す
 def simple_replace!(filename, target, after_str)
+	target.gsub!("(", "\\(")
+	target.gsub!(")", "\\)")
+	target.gsub!("[", "\\[")
+	target.gsub!("]", "\\]")
+	target.gsub!("{", "\\{")
+	target.gsub!("}", "\\}")
+	target.gsub!("+", "\\+")
 	target.gsub!(".", "\\.")
 	target.gsub!("?", ".")
 

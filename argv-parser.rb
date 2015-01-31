@@ -51,6 +51,7 @@ class ARGVParser
 
 	#-y Yes/Noを尋ねないで実行
 	#-b バックアップを取る?
+	#-o 出力フォーマット指定
 
 	#This function returns a rename-option, and it's argument
 	#オプションの整合性判定はしない

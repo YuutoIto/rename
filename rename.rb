@@ -1,12 +1,6 @@
-#!/usr/bin/ruby
-
-#ココらへんを汎用的にしなくちゃな
-EXEC_DIR = Dir.pwd
-Dir.chdir("#{ENV['HOME']}/code/ruby/rename")
 require "./rename-core"
 require "./simple-replace"
 require "./argv-parser"
-Dir.chdir(EXEC_DIR)
 
 =begin
 新しくオプションの追加するときにはdir,targをパースする前に抜き出す

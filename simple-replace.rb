@@ -101,6 +101,5 @@ def simple_replace_aste!(filename, target, after_str)
 	return filename
 end
 
-
 #require './~test-simple-replace-aste'
 #require './~test-simple-replace-non-aste'

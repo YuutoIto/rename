@@ -1,5 +1,5 @@
-require 'optparse'
 require './exceptions.rb'
+require 'optparse'
 
 class ARGVParser
 	@@ERROR_MESSAGE = {

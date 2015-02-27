@@ -47,7 +47,7 @@ def simple_replace!(filename, target, after_str)
 	case target.count("*")
 	when 0
 		target.simple_escape! #ここでエスケープ
-		filename.gsub!(/#{target}/, after_str)            #通常置き換え
+		filename.gsub!(/#{target}/, after_str.word)            #通常置き換え
 	when 1
 		simple_replace_aste!(filename, target, after_str) #*マッチ置き換え
 	else
@@ -57,22 +57,21 @@ def simple_replace!(filename, target, after_str)
 	return filename
 end
 
-#easy non-break
 def simple_replace(filename, target, after_str)
-	return simple_replace!(filename.dup, target.dup, after_str.dup)
+	simple_replace!(filename.dup, target.dup, after_str)
 end
 
 def simple_replace_aste!(filename, target, after_str)
 	if target[0] == "*" || target[/^../] == "^*"
 		target.simple_escape!
-		filename.gsub!(/.*?(#{target})/, after_str + '\1')
+		filename.gsub!(/.*?(#{target})/, after_str.word + '\1')
 
 	elsif target[-1] == "*" || target[/..$/] == "*$"
 		target.sub!(/^\^/, "$") #先頭が^なら$に置き換える
 		filename.reverse!
 		target.simple_escape!  #reverse!したあとにespace
 
-		filename.gsub!(/.*?(#{target.reverse})/, after_str.reverse + '\1')
+		filename.gsub!(/.*?(#{target.reverse})/, after_str.word.reverse + '\1')
 		filename.reverse!
 
 	else #between
@@ -88,13 +87,13 @@ def simple_replace_aste!(filename, target, after_str)
 			front, back = back, front
 
 			filename.reverse!
-			filename.gsub!(/(#{front}).*?(#{back})/, '\1' + after_str.reverse + '\2')
+			filename.gsub!(/(#{front}).*?(#{back})/, '\1' + after_str.word.reverse + '\2')
 			filename.reverse!
 
 		else#通常のbetween処理
 			front.simple_escape!
 			back.simple_escape!
-			filename.gsub!(/(#{front}).*?(#{back})/, '\1' + after_str + '\2')
+			filename.gsub!(/(#{front}).*?(#{back})/, '\1' + after_str.word + '\2')
 		end
 	end
 

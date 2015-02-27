@@ -3,6 +3,12 @@ require 'minitest'
 require 'minitest/autorun'
 require '../simple-replace.rb'
 
+class String
+	def word
+		self
+	end
+end
+
 class Test_simple_replace_front < MiniTest::Test
 	def test_simple
 		assert_equal(simple_replace!("242ABC872246ABC", "*ABC" , "-"), "-ABC-ABC")

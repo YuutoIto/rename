@@ -116,7 +116,7 @@ class NewWord
 		end
 	end
 
-	def str
+	def word
 		@word_generator.call
 	end
 end

@@ -3,6 +3,12 @@ require 'minitest'
 require 'minitest/autorun'
 require '../simple-replace.rb'
 
+class String
+	def word
+		self
+	end
+end
+
 # "*"を使用しない置き換え, ^$?を使用
 class Test_simple_replace < MiniTest::Test
 	def test_simple_one_replace1

@@ -33,8 +33,8 @@ class Renamer < ARGVParser
 
 	def rename
 		@pathes.set_name_pair do |oldname|
-			newname = simple_replace(oldname, self.target, @newword.str)
-			newname = oldname if newname.empty?	#空ならそのまま
+			newname = simple_replace(oldname, self.target, @newword)
+			newname = oldname if newname.empty?
 
 			oldname = sprintf("%-32s", oldname) #インデントを揃える
 			puts "#{oldname}  =>  #{newname}"
@@ -47,9 +47,9 @@ class Renamer < ARGVParser
 			@pathes.apply_name_pair
 		end
 	end
-
 end
 
+##renamer entry point
 r = Renamer.new(ARGV)
 r.parse
 r.rename

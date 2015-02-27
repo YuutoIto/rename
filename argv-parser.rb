@@ -1,4 +1,3 @@
-#引数の順序が自由なのは正常に動作するが、各オプションの省略できる引数を省略した場合、ユーザーが意図しない動作を起こす
 require 'optparse'
 
 #OptionParser::InvalidOptionを継承させたほうがいいかも
@@ -22,6 +21,12 @@ class ARGVParser
 		number:  "replace target-string to countup number"
 	}
 
+	attr_reader :argv
+	attr_reader :rename_option
+	attr_reader :other_option
+	attr_reader :directory
+	attr_reader :target
+
 	def initialize(argv)
 		@argv = (argv.empty?)? ["-h"]: argv
 		@rename_option = Hash.new
@@ -29,12 +34,6 @@ class ARGVParser
 		@directory     = String.new
 		@target        = String.new
 	end
-	
-	attr_reader :argv
-	attr_reader :rename_option
-	attr_reader :other_option
-	attr_reader :directory
-	attr_reader :target
 
 	def debug_variable
 		puts "argv #{@argv}"
@@ -51,12 +50,11 @@ class ARGVParser
 
 	#-y Yes/Noを尋ねないで実行
 	#-b バックアップを取る?
-	#-o 出力フォーマット指定
+	#-s 出力フォーマット指定
 
 	#This function returns a rename-option, and it's argument
 	#オプションの整合性判定はしない
 	def parse_rename_option
-		
 		def @rename_option.set!(rename_mode, opt_arg)
 			fail OptionFormatError, @@ERROR_MESSAGE[:onlyone] unless self.empty?
 			
@@ -94,7 +92,8 @@ class ARGVParser
 			raise OptionFormatError, @@ERROR_MESSAGE[:many]
 		end
 
-	  @directory, @target = @argv#.slice!(0,2)
+		#要素を空にする必要がある
+	  @directory, @target = @argv.slice!(0,2)
 	end
 
 	#全てのパースと例外処理をやってくれる

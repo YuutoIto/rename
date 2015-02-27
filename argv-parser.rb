@@ -1,12 +1,5 @@
 require 'optparse'
-
-#OptionParser::InvalidOptionを継承させたほうがいいかも
-class OptionFormatError < StandardError
-	def initialize(mess = "invalid argument")
-		super(mess)
-	end
-end
-
+require './exceptions.rb'
 
 class ARGVParser
 	@@ERROR_MESSAGE = {

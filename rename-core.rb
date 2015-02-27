@@ -1,7 +1,4 @@
-require "./argv-parser.rb"
-
-class RenameRoutineError  < StandardError; end      #code bug
-class RenameStandardError < RenameRoutineError; end #この例外を補足する
+require './exceptions.rb'
 
 class String
 	def integer

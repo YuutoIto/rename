@@ -1,5 +1,5 @@
 .Makefile_*
 testd/
 t/
-Note.txt
 .*.swp
+releases/

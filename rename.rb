@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 
+#ココらへんを汎用的にしなくちゃな
 EXEC_DIR = Dir.pwd
 Dir.chdir("#{ENV['HOME']}/code/ruby/rename")
 require "./rename-core"
@@ -8,15 +9,21 @@ require "./argv-parser"
 Dir.chdir(EXEC_DIR)
 
 =begin
+新しくオプションの追加するときにはdir,targをパースする前に抜き出す
+エスケープが必要な記号を用いたテストがない
 スペースを繰り返す時はエスケープが必要かも
 -n　を使った時文字列がマッチしなかった場合にもカウントアップされちゃう
-	gsubで複数マッチした時に同じファイルでは同じ数値を使用するように呼び出し時にstrを使用しているけれど
-	それをやめて@newwordオブジェクトを渡してgusbのブロックで実行させれば空読みがなくなるはず
-	match->block.call->gsub("", str)でもいいけどmatchで処理食うな
-1.jpg 2.jpg 10.jpg とあったとすると 1.jpg 10.jpg 2.jpgの順になる
-rubyの正規表現を生で使うモードを作る
+		gsubで複数マッチした時に同じファイルでは同じ数値を使用するように呼び出し時にstrを使用しているけれど
+		それをやめて@newwordオブジェクトを渡してgusbのブロックで実行させれば空読みがなくなるはず
+		match->block.call->gsub("", str)でもいいけどmatchで処理食うな
 
-出力桁数を指定する　オプションを作る
+1.jpg 2.jpg 10.jpg とあったとすると 1.jpg 10.jpg 2.jpgの順になる
+		-nを指定した時は　文字でソートするのではなく数値でソードできるようにする
+
+rubyの正規表現を生で使うモードを作る
+		--free --super とか?
+
+変更チェックの出力桁数を指定する　オプションを作る
 =end
 
 class Renamer < ARGVParser

@@ -1,8 +1,9 @@
 #!/usr/bin/ruby
-require './simple-replace.rb'
-require 'minitest/unit'
+require 'minitest'
 require 'minitest/autorun'
-class Test_simple_replace_front < MiniTest::Unit::TestCase
+require '../simple-replace.rb'
+
+class Test_simple_replace_front < MiniTest::Test
 	def test_simple
 		assert_equal(simple_replace!("242ABC872246ABC", "*ABC" , "-"), "-ABC-ABC")
 	end
@@ -20,7 +21,7 @@ class Test_simple_replace_front < MiniTest::Unit::TestCase
 	end
 
 	def test_1
-		assert_equal(simple_replace!("WCM000.jpg", "*CM\\.jpg", "888"), "WCM000.jpg")
+		assert_equal(simple_replace!("WCM000.jpg", "*CM000.jpg", "888"), "888CM000.jpg")
 	end
 
 	def test_2
@@ -33,7 +34,7 @@ class Test_simple_replace_front < MiniTest::Unit::TestCase
 	end
 end
 
-class Test_simple_replace_back < MiniTest::Unit::TestCase
+class Test_simple_replace_back < MiniTest::Test
 	#^なしで先頭からマッチする
 	def test_simple1
 		assert_equal(simple_replace!("WCM000.jpg", "WC*", "99999"), "WC99999")
@@ -65,7 +66,7 @@ class Test_simple_replace_back < MiniTest::Unit::TestCase
 	end
 end
 
-class Test_simple_replace_between < MiniTest::Unit::TestCase
+class Test_simple_replace_between < MiniTest::Test
 	def test_simple1
 		assert_equal(simple_replace!("WDC000.jpg", "WDC*.jpg", "1111"), "WDC1111.jpg")
 	end
@@ -89,39 +90,39 @@ class Test_simple_replace_between < MiniTest::Unit::TestCase
 end
 
 
-class Test_simple_replace_aste_question < MiniTest::Unit::TestCase
-	def test1
+class Test_simple_replace_aste_question < MiniTest::Test
+	def test_1
 		assert_equal(simple_replace!("A1ooBA2klmB", "A?*B", "@"), "A1@BA2@B")
 	end
 
-	def test2
+	def test_2
 		assert_equal(simple_replace!("A1ooBA2lkmB", "A*?B", "@"), "A@oBA@mB")
 	end
 
-	def test3
+	def test_3
 		assert_equal(simple_replace!("A1BgggA2B", "A?B*A?B", "@"), "A1B@A2B")
 	end
 
-	def test4
+	def test_4
 		assert_equal(simple_replace!("A1BA2B", "A?B*A?B", "@"), "A1B@A2B")
 	end
 
-	def test5
+	def test_5
 		assert_equal(simple_replace!("ABC123.jpg", "???*.jpg", "999"), "ABC999.jpg")
 	end
 
 	#面白い使い方
-	def test6
+	def test_6
 		assert_equal(simple_replace!("ABCD", "*?", "@"), "@A@B@C@D")
 	end
 
 	#面白い使い方
-	def test7
+	def test_7
 		assert_equal(simple_replace!("1234", "?*", "@"), "1@2@3@4@")
 	end
 
 	#$を使用しないと全ての文字の前に@がつく
-	def test8
+	def test_8
 		assert_equal(simple_replace!("ABC123D", "*?$", "@"), "@D")
 	end
 

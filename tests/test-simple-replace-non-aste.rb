@@ -1,10 +1,10 @@
 #!/usr/bin/ruby
-require './simple-replace.rb'
-require 'minitest/unit'
+require 'minitest'
 require 'minitest/autorun'
+require '../simple-replace.rb'
 
 # "*"を使用しない置き換え, ^$?を使用
-class Test_simple_replace < MiniTest::Unit::TestCase
+class Test_simple_replace < MiniTest::Test
 	def test_simple_one_replace1
 		assert_equal(simple_replace!("WDC000.jpg",   "DC" , "QQ"), "WQQ000.jpg")
 	end

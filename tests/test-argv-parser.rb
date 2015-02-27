@@ -1,9 +1,9 @@
 #!/usr/bin/ruby
-require './argv-parser.rb'
-require 'minitest/unit'
+require 'minitest'
 require 'minitest/autorun'
+require '../argv-parser.rb'
 
-class Test_ARGVParser < MiniTest::Unit::TestCase
+class Test_ARGVParser < MiniTest::Test
 	#replace rename's true arguments
 	def test_r0
 		parser = ARGVParser.new ["/home/", "target", "-r", "after"]
@@ -61,7 +61,7 @@ class Test_ARGVParser < MiniTest::Unit::TestCase
 		parser = ARGVParser.new ["/home/", "target", "-n", "00001"]
 		parser.parse_rename_option
 		parser.parse_dir_targ
-		
+
 		assert_empty(parser.argv)
 		assert_equal({:mode=>:number, :arg=>"00001"}, parser.rename_option)
 		assert_equal("/home/", parser.directory)

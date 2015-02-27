@@ -9,62 +9,50 @@ This program
  * target中の* に0文字以上一致したfilenameの文字列を変更対象にする
 =end
 
-#例外使う
-require './rename-core.rb'
+# (){}のエスケープが $とかでreverseした時に機能しない可能性がある
+# エスケープが必要な記号を用いたテストがない
+# simple* モジュールにする
 
-def simple_replace_aste!(filename, target, after_str)
-	fail RenameRoutineError,'"*" not found' unless target.count("*") == 1
-
-	pivod = target.delete("*")
-
-	if target[0] == "*"
-		filename.gsub!(/.*?(#{pivod})/, after_str + '\1')
-	elsif target[-1] == "*"
-		pivod.sub!(/^\^/, "$") #先頭が^なら$に置き換える
-		pivod.gsub!("\\.", ".\\")
-
-		filename.reverse!
-		filename.gsub!(/.*?(#{pivod.reverse})/, after_str.reverse + '\1')
-		filename.reverse!
-	else #between
-		front, back = target.split("*")
-
-		#$のみが使用されていた場合は反転して処理
-		if front[0] != "^" && back[-1] == "$" 
-			back[-1] = "^" #下準備
-			front.gsub!("\\.", ".\\")
-			back.gsub!("\\.", ".\\")
-
-			front, back = back.reverse, front.reverse
-
-			filename.reverse!
-			filename.gsub!(/(#{front}).*?(#{back})/, '\1' + after_str.reverse + '\2')
-			filename.reverse!
-		else#通常のbetween処理
-			filename.gsub!(/(#{front}).*?(#{back})/, '\1' + after_str + '\2')
-		end
+#simple_replace専用の関数
+#エスケープしたくない文字もある
+class String
+	def simple_escape
+		newstr = self.dup
+		newstr.gsub!("(", "\\(")
+		newstr.gsub!(")", "\\)")
+		newstr.gsub!("[", "\\[")
+		newstr.gsub!("]", "\\]")
+		newstr.gsub!("{", "\\{")
+		newstr.gsub!("}", "\\}")
+		newstr.gsub!("+", "\\+")
+		newstr.gsub!(".", "\\.")
+		newstr.gsub!("?", ".")
+		newstr.delete!('*')
+		return newstr
 	end
 
-	return filename
+	def simple_escape!
+		self.gsub!("(", "\\(")
+		self.gsub!(")", "\\)")
+		self.gsub!("[", "\\[")
+		self.gsub!("]", "\\]")
+		self.gsub!("{", "\\{")
+		self.gsub!("}", "\\}")
+		self.gsub!("+", "\\+")
+		self.gsub!(".", "\\.")
+		self.gsub!("?", ".")
+		self.delete!('*')
+	end
 end
 
 #filenameは改変される、戻り値も改変後の値を返す
 def simple_replace!(filename, target, after_str)
-	target.gsub!("(", "\\(")
-	target.gsub!(")", "\\)")
-	target.gsub!("[", "\\[")
-	target.gsub!("]", "\\]")
-	target.gsub!("{", "\\{")
-	target.gsub!("}", "\\}")
-	target.gsub!("+", "\\+")
-	target.gsub!(".", "\\.")
-	target.gsub!("?", ".")
-
 	case target.count("*")
 	when 0
-		filename.gsub!(/#{target}/, after_str)
+		target.simple_escape! #ここでエスケープ
+		filename.gsub!(/#{target}/, after_str)            #通常置き換え
 	when 1
-		simple_replace_aste!(filename, target, after_str)
+		simple_replace_aste!(filename, target, after_str) #*マッチ置き換え
 	else
 	 fail RenameStandardError, 'target can use "*" is only one'
 	end
@@ -74,8 +62,48 @@ end
 
 #easy non-break
 def simple_replace(filename, target, after_str)
-	simple_replace!(filename.dup, target.dup, after_str.dup)
+	return simple_replace!(filename.dup, target.dup, after_str.dup)
 end
+
+def simple_replace_aste!(filename, target, after_str)
+	if target[0] == "*" || target[/^../] == "^*"
+		target.simple_escape!
+		filename.gsub!(/.*?(#{target})/, after_str + '\1')
+
+	elsif target[-1] == "*" || target[/..$/] == "*$"
+		target.sub!(/^\^/, "$") #先頭が^なら$に置き換える
+		filename.reverse!
+		target.simple_escape!  #reverse!したあとにespace
+
+		filename.gsub!(/.*?(#{target.reverse})/, after_str.reverse + '\1')
+		filename.reverse!
+
+	else #between
+		front, back = target.split("*")
+
+		#if "$" other than unused, reverse strings
+		if back[-1] == "$" && front[0] != "^" 
+			back[-1] = "^"
+
+			# 反転、エスケープして交換
+			front.reverse!.simple_escape!
+			back.reverse!.simple_escape!
+			front, back = back, front
+
+			filename.reverse!
+			filename.gsub!(/(#{front}).*?(#{back})/, '\1' + after_str.reverse + '\2')
+			filename.reverse!
+
+		else#通常のbetween処理
+			front.simple_escape!
+			back.simple_escape!
+			filename.gsub!(/(#{front}).*?(#{back})/, '\1' + after_str + '\2')
+		end
+	end
+
+	return filename
+end
+
 
 #require './~test-simple-replace-aste'
 #require './~test-simple-replace-non-aste'

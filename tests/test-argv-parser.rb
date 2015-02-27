@@ -1,7 +1,9 @@
 #!/usr/bin/ruby
 require 'minitest'
 require 'minitest/autorun'
-require '../argv-parser.rb'
+
+Dir.chdir("../")
+require './argv-parser.rb'
 
 class Test_ARGVParser < MiniTest::Test
 	#replace rename's true arguments

@@ -3,4 +3,4 @@ makefile
 testd/
 t/
 .*.swp
-releases/
+./releases/rbrn

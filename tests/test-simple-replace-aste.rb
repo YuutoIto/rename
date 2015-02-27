@@ -1,7 +1,9 @@
 #!/usr/bin/ruby
 require 'minitest'
 require 'minitest/autorun'
-require '../simple-replace.rb'
+
+Dir.chdir("../")
+require './simple-replace.rb'
 
 class String
 	def word

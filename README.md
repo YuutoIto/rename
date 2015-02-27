@@ -1,15 +1,13 @@
 renameはruby2.1以上での動作を確認しています。
-使用時は実行パーミッションを付加し、~/binに入れることを推奨します。
-
 
 使用方法
 (-h --help に簡易説明あり)
 
-rbrn directory target-string [-ren]
+rbrn directory target-string mode [arg]
 
     directory       リネーム対象のファイルがあるディレクトリ
     target-string   ファイル名の変更する部分文字列(置き換え対象)
-    -ren            リネーム方式を指定
+    mode [arg]     リネーム方式を指定
 
     target-stringは独自の正規表現の使用が可能
         ^       target-stringの先頭に使用するとファイル名の先頭にのみマッチするようになる
@@ -21,14 +19,14 @@ rbrn directory target-string [-ren]
     -e          target-stringにマッチする文字列を削除する
     -n [NUM]    target-stringにマッチする文字列をNUMで指定した数値を数え上げした文字列に変更する
                 指定した桁数で全てのファイル名を表現できない場合は自動で桁を合わせる
-                0000 の場合4桁の0からの数え上げ
-                50   の場合2桁の50からの数え上げ
-                未指定の場合自動桁合わせ、0からの数え上げ
+                0000 の場合 4桁の0000からの数え上げ
+                50   の場合 2桁の50からの数え上げ
+                未指定の場合自動桁合わせで0からの数え上げ
 
 
-######使用例######
+#使用例
 
-##対象ディレクトリ
+#対象ディレクトリ
 sampled
     WCW000.jpg
     WCW001.jpg

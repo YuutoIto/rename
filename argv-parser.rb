@@ -41,7 +41,7 @@ class ARGVParser
 		self.send(symb)
 	end
 
-	#-y Yes/Noを尋ねないで実行
+	#-f Yes/Noを尋ねないで実行
 	#-b バックアップを取る?
 	#-s 出力フォーマット指定
 

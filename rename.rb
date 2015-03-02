@@ -3,6 +3,9 @@ require "./simple-replace"
 require "./argv-parser"
 
 =begin
+常に最新の状態で使用できるようにリポジトリのrename.rbを呼び出す
+rubyのコードを書く&添付する
+
 新しくオプションの追加するときにはdir,targをパースする前に抜き出す
 エスケープが必要な記号を用いたテストがない
 スペースを繰り返す時はエスケープが必要かも

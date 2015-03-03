@@ -1,6 +1,7 @@
 require "./rename-core"
 require "./simple-replace"
 require "./argv-parser"
+Version = 1.3
 
 =begin
 常に最新の状態で使用できるようにリポジトリのrename.rbを呼び出す

@@ -1,21 +1,8 @@
 require './utils'
 
 class TargetPathes
-  def each(&block)
-    @names.each{ |oldname| block.call(oldname) }
-  end
-
   def apply_name_pair
     recursive_rename(@path_set)
-  end
-
-  def set_name_pair(&block)
-    @path_set = []
-    @names.each do |oldname|
-      newname = block.call(oldname)
-      @path_set.push([@DIR_NAME.join(oldname), @DIR_NAME.join(newname)])
-    end
-    return nil
   end
 
   def safe_rename(path_pairs)

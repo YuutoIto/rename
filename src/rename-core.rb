@@ -1,8 +1,4 @@
-class String
-	def join(path)
-		File.join(self, path)
-	end
-end
+require './utils'
 
 class TargetPathes
 	def initialize(dir_path, mode)

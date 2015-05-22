@@ -1,6 +1,13 @@
+require './utils'
 require "./rename-core"
-require "./argv-parser"
 Version = 2.0
+
+#get options
+opt = argv_parse
+
+#emnurate_targets
+pathes = enum_targets(opt)
+
 
 class Renamer < ARGVParser
 	def initialize(argv)

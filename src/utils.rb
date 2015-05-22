@@ -79,7 +79,7 @@ def argv_parse# {{{
     error(ex.message, 13)
 end# }}}
 
-def enum_targets(opt)
+def get_pathes(opt)
   error("#{opt[:dir]} is not exists.", 30) unless Dir.exists?(opt[:dir])
 
   pathes = Dir.glob(opt[:dir].join("*"))
@@ -89,7 +89,7 @@ def enum_targets(opt)
   when :dir
     pathes.select!{ |path| File.directory?(path) }
   end
-  return if pathes.empty?
+  goodbye('') if pathes.empty?
 
-  pathes.map{|name| File.basename(name) }.sort!
+  return pathes.sort_by! { |path| File.basename(path) }
 end

@@ -7,7 +7,7 @@ Version = 2.0
 opt = argv_parse
 
 #emnurate_targets
-pathes = enum_targets(opt)
+pathes = get_pathes(opt)
 
 
   end

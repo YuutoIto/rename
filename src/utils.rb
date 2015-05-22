@@ -52,15 +52,15 @@ def simple_escape(str)
   simple_escape!(str.dup)
 end
 
-def argv_parse
+def argv_parse# {{{
   ARGV[0] = '--help' if ARGV.size == 0
   opt = { dir: './', before: nil, after: '', type: :file } #default values
 
   parser = OptionParser.new
   parser.banner = 'Usage: rbrn' #TODO
-  parser.on('-r BEFORE [AFTER]',   HELP_MESSAGE[:replace]) do |before, after|
+  parser.on('-r BEFORE [AFTER]',   HELP_MESSAGE[:replace]) do |before|
     opt[:before] = before
-    opt[:after]  = after if after
+    opt[:after]  = ARGV.shift if ARGV[0][0] != '-'
   end
 
   parser.on('-t TYPE', HELP_MESSAGE[:type]) do |type|
@@ -77,7 +77,7 @@ def argv_parse
 
   rescue OptionParser::MissingArgument, OptionParser::InvalidOption=> ex
     error(ex.message, 13)
-end
+end# }}}
 
 def enum_targets(opt)
   error("#{opt[:dir]} is not exists.", 30) unless Dir.exists?(opt[:dir])

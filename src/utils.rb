@@ -32,7 +32,7 @@ def goodbye(message)
   exit(0)
 end
 
-#you can use regexp ^,$,?,* in before-string
+#you can use regexp ^,$,?,* in before-string # {{{
 #エスケープしたくない文字もある
 def simple_escape!(str)
   str.gsub!('(', '\(')
@@ -51,6 +51,7 @@ end
 def simple_escape(str)
   simple_escape!(str.dup)
 end
+# }}}
 
 def argv_parse# {{{
   ARGV[0] = '--help' if ARGV.size == 0
@@ -79,7 +80,7 @@ def argv_parse# {{{
     error(ex.message, 13)
 end# }}}
 
-def get_pathes(opt)
+def get_pathes(opt)# {{{
   error("#{opt[:dir]} is not exists.", 30) unless Dir.exists?(opt[:dir])
 
   pathes = Dir.glob(opt[:dir].join("*"))
@@ -92,9 +93,9 @@ def get_pathes(opt)
   goodbye('') if pathes.empty?
 
   return pathes.sort_by! { |path| File.basename(path) }
-end
+end# }}}
 
-def get_before_after(opt, pathes)
+def get_before_after(opt, pathes)# {{{
   regexp = Regexp.new(simple_escape(opt[:before]))
 
   pathes.map do |path|
@@ -104,5 +105,5 @@ def get_before_after(opt, pathes)
 
     [path, opt[:dir].join(after_name)]
   end
-end
+end# }}}
 

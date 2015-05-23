@@ -1,5 +1,5 @@
 require './utils'
-require "./rename-core"
+require './rename-core'
 Version = 2.0
 
 #get options
@@ -11,10 +11,7 @@ pathes = get_pathes(opt)
 # show rename condidate and get this.
 bf_pairs = get_before_after(opt, pathes)
 
-puts "Rename these? (y/N)"
-case STDIN.gets.chomp
-when /^Y$/i, /^YES$/i
-  bf_pairs.each do |before, after|
-    File.rename(before, after)
-  end
+puts 'Rename these? (y/N)'
+if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
+  bf_pairs.each {|pair| recursive_rename(pair) }
 end

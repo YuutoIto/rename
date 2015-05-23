@@ -13,5 +13,5 @@ bf_pairs = get_before_after(opt, pathes)
 
 puts 'Rename these? (y/N)'
 if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
-  bf_pairs.each {|pair| recursive_rename(pair) }
+  recursive_rename!(bf_pairs)
 end

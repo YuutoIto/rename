@@ -53,6 +53,7 @@ def simple_escape(str)
 end
 # }}}
 
+# Parse directly ARGV
 def argv_parse# {{{
   ARGV[0] = '--help' if ARGV.size == 0
   opt = { dir: './', before: nil, after: '', type: :file } #default values

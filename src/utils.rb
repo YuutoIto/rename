@@ -105,5 +105,7 @@ def get_before_after(opt, pathes)# {{{
 
     [path, opt[:dir].join(after_name)]
   end
+
+  pathes.delete_if {|old, new| old == new }
 end# }}}
 

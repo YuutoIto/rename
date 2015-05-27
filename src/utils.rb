@@ -117,3 +117,13 @@ def safe_rename_pairs!(path_pairs)
   end
 end
 
+# safe_rename_pairs!を名前が変更しきれなくなるまで繰り返す
+def recursive_rename!(path_pairs)
+  unless safe_rename_pairs!(path_pairs)
+    warn "Overlap: The following files did not rename, because already exists"
+    overlap.each {|old, new| puts "#{old} => #{new}" }
+    return false
+  end
+
+  return path_pairs.size == 0 || recursive_rename!(path_pairs)
+end

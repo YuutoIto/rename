@@ -83,7 +83,7 @@ module RenameUtils
   end# }}}
 
   def get_pathes(opt)# {{{
-    error("#{opt[:dir]} is not exists.", 30) unless Dir.exists?(opt[:dir])
+    error("#{opt[:dir]} is not exist.", 30) unless Dir.exist?(opt[:dir])
 
     pathes = Dir.glob(opt[:dir].join("*"))
     case opt[:type]
@@ -114,18 +114,18 @@ module RenameUtils
   #if elements is not deleted return nil.
   def safe_rename_pairs!(path_pairs)
     return path_pairs.reject! do |old, new|
-      next !File.exists?(new) && File.rename(old, new)
+      next !File.exist?(new) && File.rename(old, new)
     end
   end
 
   # safe_rename_pairs!を名前が変更しきれなくなるまで繰り返す
   def recursive_rename!(path_pairs)
     unless safe_rename_pairs!(path_pairs)
-      warn "Overlap: The following files did not rename, because already exists"
-      overlap.each {|old, new| puts "#{old} => #{new}" }
+      warn "Overlap: The following files did not rename, because already exist"
+      path_pairs.each {|old, new| puts "#{old} => #{new}" }
       return false
     end
 
-    return path_pairs.size == 0 || recursive_rename!(path_pairs)
+    return path_pairs.empty? || recursive_rename!(path_pairs)
   end
 end

@@ -107,12 +107,12 @@ def get_before_after(opt, pathes)# {{{
     [path, opt[:dir].join(after_name)]
   end
 
-  pathes.delete_if {|old, new| old == new }
+  return pathes.delete_if {|old, new| old == new }
 end# }}}
 
 #if elements is not deleted return nil.
 def safe_rename_pairs!(path_pairs)
-  path_pairs.reject! do |old, new|
+  return path_pairs.reject! do |old, new|
     next !File.exists?(new) && File.rename(old, new)
   end
 end

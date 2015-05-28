@@ -1,7 +1,7 @@
 require 'optparse'
 require 'find'
 
-module RenameUtils
+module RenameUtils# {{{
   class RenameRoutineError  < StandardError; end      #code bug
   class RenameStandardError < RenameRoutineError; end #この例外を補足する
 
@@ -128,4 +128,4 @@ module RenameUtils
 
     return path_pairs.empty? || recursive_rename!(path_pairs)
   end
-end
+end# }}}

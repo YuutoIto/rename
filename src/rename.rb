@@ -99,7 +99,7 @@ module RenameUtils# {{{
     when :dir
       pathes.select!{ |path| File.directory?(path) }
     end
-    goodbye('') if pathes.empty?
+    exit(0) if pathes.empty?
 
     return pathes.sort_by! { |path| File.basename(path) }
   end# }}}
@@ -115,6 +115,7 @@ module RenameUtils# {{{
       next [path, opt[:dir].join(after_name)]
     end
 
+    #表示はされるけどリストからは除外
     return pathes.delete_if {|old, new| old == new }
   end# }}}
 
@@ -152,8 +153,9 @@ unless defined?(DO_SPEC)
 
   # show rename condidate and get this.
   bf_pairs = get_before_after(opt, pathes)
+  puts "\n#{bf_pairs.size} names rename"
 
-  puts 'Rename these? (y/N)'
+  print 'Rename these? (y/N) '
   if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
     recursive_rename!(bf_pairs)
   end

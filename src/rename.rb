@@ -128,13 +128,15 @@ module RenameUtils# {{{
 
   # safe_rename_pairs!を名前が変更しきれなくなるまで繰り返す
   def recursive_rename!(path_pairs)# {{{
+    return true if path_pairs.empty?
+
     unless safe_rename_pairs!(path_pairs)
       warn "Overlap: The following files did not rename, because already exist"
       path_pairs.each {|old, new| puts "#{old} => #{new}" }
       return false
     end
 
-    return path_pairs.empty? || recursive_rename!(path_pairs)
+    return recursive_rename!(path_pairs)
   end# }}}
 end# }}}
 

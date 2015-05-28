@@ -60,7 +60,7 @@ module RenameUtils# {{{
     opt = { dir: './', before: nil, after: '', type: :file } #default values
 
     parser = OptionParser.new
-    parser.banner = 'Usage: rbrn' #TODO
+    parser.banner = 'Usage: rbrn mode [BEFORE] [AFTER] [type] [DIR]'
     parser.on('-r BEFORE [AFTER]',   HELP_MESSAGE[:replace]) do |before|
       opt[:before] = before
       opt[:after]  = ARGV.shift if ARGV[0][0] != '-'

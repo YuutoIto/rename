@@ -1,4 +1,6 @@
-require "../src/utils.rb"
+#main-routineを実行しないようにする
+DO_SPEC = true
+require "../src/rename.rb"
 require "fileutils"
 
 include RenameUtils

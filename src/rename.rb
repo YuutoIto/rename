@@ -133,19 +133,22 @@ end# }}}
 
 
 #main-routine
-Version = 2.0
-include RenameUtils
+#DO_SPECが定義されていなければ実行
+unless defined?(DO_SPEC)
+  Version = 2.0
+  include RenameUtils
 
-#get options
-opt = argv_parse
+  #get options
+  opt = argv_parse
 
-#emnurate_targets
-pathes = get_pathes(opt)
+  #emnurate_targets
+  pathes = get_pathes(opt)
 
-# show rename condidate and get this.
-bf_pairs = get_before_after(opt, pathes)
+  # show rename condidate and get this.
+  bf_pairs = get_before_after(opt, pathes)
 
-puts 'Rename these? (y/N)'
-if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
-  recursive_rename!(bf_pairs)
+  puts 'Rename these? (y/N)'
+  if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
+    recursive_rename!(bf_pairs)
+  end
 end

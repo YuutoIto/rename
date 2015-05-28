@@ -2,6 +2,12 @@
 require 'optparse'
 require 'find'
 
+class String
+  def join(path)
+    File.join(self, path)
+  end
+end
+
 module RenameUtils# {{{
   class RenameRoutineError  < StandardError; end      #code bug
   class RenameStandardError < RenameRoutineError; end #この例外を補足する
@@ -18,11 +24,6 @@ module RenameUtils# {{{
     type: 'The kind of the targets. You ca use file, dir and all.',
   }
 
-  class String
-    def join(path)
-      File.join(self, path)
-    end
-  end
 
   def error(message, num)
     warn "error: #{message}"
@@ -64,7 +65,7 @@ module RenameUtils# {{{
     parser.banner = 'Usage: rbrn mode [BEFORE] [AFTER] [type] [DIR]'
     parser.on('-r BEFORE [AFTER]',   HELP_MESSAGE[:replace]) do |before|
       opt[:before] = before
-      opt[:after]  = ARGV.shift if ARGV[0][0] != '-'
+      opt[:after]  = ARGV.shift if !ARGV.empty? && ARGV.first[0] != '-'
     end
 
     parser.on('-t TYPE', HELP_MESSAGE[:type]) do |type|
@@ -76,7 +77,7 @@ module RenameUtils# {{{
     end
     parser.parse!(ARGV)
 
-    opt[:dir] = ARGV[0] if ARGV.empty?
+    opt[:dir] = ARGV[0] unless ARGV.empty?
     return opt
 
   rescue OptionParser::MissingArgument, OptionParser::InvalidOption=> ex

@@ -1,8 +1,6 @@
 require 'optparse'
 require 'find'
 
-Version = 2.0
-
 module RenameUtils# {{{
   class RenameRoutineError  < StandardError; end      #code bug
   class RenameStandardError < RenameRoutineError; end #この例外を補足する
@@ -58,7 +56,7 @@ module RenameUtils# {{{
 
   # Parse directly ARGV
   def argv_parse# {{{
-    ARGV[0] = '--help' if ARGV.size == 0
+    ARGV[0] = '--help' if ARGV.empty?
     opt = { dir: './', before: nil, after: '', type: :file } #default values
 
     parser = OptionParser.new
@@ -77,7 +75,7 @@ module RenameUtils# {{{
     end
     parser.parse!(ARGV)
 
-    opt[:dir] = ARGV[0] if ARGV[0]
+    opt[:dir] = ARGV[0] if ARGV.empty?
     return opt
 
   rescue OptionParser::MissingArgument, OptionParser::InvalidOption=> ex
@@ -134,6 +132,8 @@ end# }}}
 
 
 #main-routine
+Version = 2.0
+include RenameUtils
 
 #get options
 opt = argv_parse

@@ -63,17 +63,13 @@ module RenameUtils# {{{
 
     parser = OptionParser.new
     parser.banner = 'Usage: rbrn mode [BEFORE] [AFTER] [type] [DIR]'
+
     parser.on('-r BEFORE [AFTER]',   HELP_MESSAGE[:replace]) do |before|
       opt[:before] = before
-
       if 1 <= ARGV.size
-        if 2 <= ARGV.size && ARGV[0] == '--'
-          opt[:after] = ARGV[1]
-          ARGV.shift(2)
-        else
-          opt[:after] = ARGV[0]
-          ARGV.shift(1)
-        end
+        num = (2 <= ARGV.size && ARGV[0] == '--')? 2 : 1
+        opt[:after] = ARGV[num - 1]
+        ARGV.shift(num)
       end
     end
 
@@ -84,8 +80,8 @@ module RenameUtils# {{{
         error(ERROR_MESSAGE[:type], 12)
       end
     end
-    parser.parse!(ARGV)
 
+    parser.parse!(ARGV)
     opt[:dir] = ARGV[0] unless ARGV.empty?
     return opt
 

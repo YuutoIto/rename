@@ -65,7 +65,16 @@ module RenameUtils# {{{
     parser.banner = 'Usage: rbrn mode [BEFORE] [AFTER] [type] [DIR]'
     parser.on('-r BEFORE [AFTER]',   HELP_MESSAGE[:replace]) do |before|
       opt[:before] = before
-      opt[:after]  = ARGV.shift if !ARGV.empty? && ARGV.first[0] != '-'
+
+      if 1 <= ARGV.size
+        if 2 <= ARGV.size && ARGV[0] == '--'
+          opt[:after] = ARGV[1]
+          ARGV.shift(2)
+        else
+          opt[:after] = ARGV[0]
+          ARGV.shift(1)
+        end
+      end
     end
 
     parser.on('-t TYPE', HELP_MESSAGE[:type]) do |type|

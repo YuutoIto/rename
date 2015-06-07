@@ -62,11 +62,13 @@ module RenameUtils# {{{
     opt = { dir: './', before: nil, after: '', type: :file } #default values
 
     parser = OptionParser.new
-    parser.banner = 'Usage: rbrn mode [BEFORE] [AFTER] [type] [DIR]'
+    parser.banner = 'Usage: rbrn MODE [BEFORE] [AFTER] [-t TYPE] [DIR]'
 
     parser.on('-r BEFORE [AFTER]',   HELP_MESSAGE[:replace]) do |before|
       opt[:before] = before
-      if 1 <= ARGV.size
+
+      #無理やり第2引数を取る
+      unless ARGV.empty?
         num = (2 <= ARGV.size && ARGV[0] == '--')? 2 : 1
         opt[:after] = ARGV[num - 1]
         ARGV.shift(num)

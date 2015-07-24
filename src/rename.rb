@@ -38,14 +38,7 @@ module RenameUtils# {{{
   #you can use regexp ^,$,?,* in before-string # {{{
   #エスケープしたくない文字もある
   def simple_escape!(str)
-    str.gsub!('(', '\(')
-    str.gsub!(')', '\)')
-    str.gsub!('[', '\[')
-    str.gsub!(']', '\]')
-    str.gsub!('{', '\{')
-    str.gsub!('}', '\}')
-    str.gsub!('+', '\+')
-    str.gsub!('.', '\.')
+    '(){}[]+.'.each_char {|c| str.gsub!(c, '\\'+c) }
     str.gsub!('?', '.')
     str.gsub!('*', '.*?')
     return str

@@ -137,8 +137,7 @@ end# }}}
 
 
 #main-routine
-#DO_SPECが定義されていなければ実行
-unless defined?(DO_SPEC)
+if __FILE__ == $0
   Version = 2.0
   include RenameUtils
 

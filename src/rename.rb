@@ -59,14 +59,8 @@ module RenameUtils# {{{
     parser.banner = 'Usage: rbrn MODE [BEFORE] [AFTER] [-t TYPE] [DIR]'
 
     parser.on('-r BEFORE [AFTER]',   HELP_MESSAGE[:replace]) do |before|
+      opt[:mode] = :replace
       opt[:before] = before
-
-      #無理やり第2引数を取る
-      unless ARGV.empty?
-        num = (2 <= ARGV.size && ARGV[0] == '--')? 2 : 1
-        opt[:after] = ARGV[num - 1]
-        ARGV.shift(num)
-      end
     end
 
     parser.on('-t TYPE', HELP_MESSAGE[:type]) do |type|
@@ -82,8 +76,13 @@ module RenameUtils# {{{
     end
 
     parser.parse!(ARGV)
-    return opt
 
+    # Get after string of the replace mode
+    if opt[:mode] == :replace && !ARGV.empty?
+      opt[:after] = ARGV.shift
+    end
+
+    return opt
   rescue OptionParser::MissingArgument, OptionParser::InvalidOption=> ex
     error(ex.message, 13)
   end# }}}

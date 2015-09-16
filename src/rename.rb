@@ -22,6 +22,7 @@ module RenameUtils# {{{
   HELP_MESSAGE = {
     replace: 'replace before to after. The default value of after is empty string.',
     type: 'The kind of the targets. You ca use file, dir and all.',
+    dir: 'Replace target directory',
   }
 
 
@@ -76,8 +77,11 @@ module RenameUtils# {{{
       end
     end
 
+    parser.on('-d DIR', HELP_MESSAGE[:dir]) do |dir|
+      opt[:dir] = dir
+    end
+
     parser.parse!(ARGV)
-    opt[:dir] = ARGV[0] unless ARGV.empty?
     return opt
 
   rescue OptionParser::MissingArgument, OptionParser::InvalidOption=> ex

@@ -53,12 +53,11 @@ module RenameUtils# {{{
   # Parse directly ARGV
   def argv_parse# {{{
     ARGV[0] = '--help' if ARGV.empty?
-    opt = { dir: './', before: nil, after: '', type: :file } #default values
-
+    opt = { mode: nil, before: nil, after: '', type: :file, dir: './', } #default values
     parser = OptionParser.new
-    parser.banner = 'Usage: rbrn MODE [BEFORE] [AFTER] [-t TYPE] [DIR]'
+    parser.banner = 'Usage: rbrn <mode [args..]> [before] [after] [-t type] [-d dir]'
 
-    parser.on('-r BEFORE [AFTER]',   HELP_MESSAGE[:replace]) do |before|
+    parser.on('-r BEFORE [AFTER]', HELP_MESSAGE[:replace]) do |before|
       opt[:mode] = :replace
       opt[:before] = before
     end
@@ -118,11 +117,11 @@ module RenameUtils# {{{
   end# }}}
 
   #if elements is not deleted return nil.
-  def safe_rename_pairs!(path_pairs)
+  def safe_rename_pairs!(path_pairs) # {{{
     return path_pairs.reject! do |old, new|
       next !File.exist?(new) && File.rename(old, new)
     end
-  end
+  end # }}}
 
   # safe_rename_pairs!を名前が変更しきれなくなるまで繰り返す
   def recursive_rename!(path_pairs)# {{{
@@ -141,7 +140,7 @@ end# }}}
 
 #main-routine
 if __FILE__ == $0
-  Version = 2.0
+  Version = 2.1
   include RenameUtils
 
   #get options

@@ -18,22 +18,23 @@ def goodbye(message)
   exit(0)
 end
 
+ERROR_MESSAGE = {
+  enough:  'Not enough arguments.',
+  many:    'Too many arguments.',
+  onlyone: 'Can be specified rename-option is only one.',
+  type: 'Invalid type, You can use file, dir and all. The default is file.',
+}
+
+HELP_MESSAGE = {
+  replace: 'replace before to after. The default value of after is empty string.',
+  type: 'The kind of the targets. You ca use file, dir and all.',
+  dir: 'Replace target directory',
+}
+
+
 module RenameUtils# {{{
   class RenameRoutineError  < StandardError; end      #code bug
-  class RenameStandardError < RenameRoutineError; end #この例外を補足する
-
-  ERROR_MESSAGE = {
-    enough:  'Not enough arguments.',
-    many:    'Too many arguments.',
-    onlyone: 'Can be specified rename-option is only one.',
-    type: 'Invalid type, You can use file, dir and all. The default is file.',
-  }
-
-  HELP_MESSAGE = {
-    replace: 'replace before to after. The default value of after is empty string.',
-    type: 'The kind of the targets. You ca use file, dir and all.',
-    dir: 'Replace target directory',
-  }
+  class RenameStandardError < RenameRoutineError; end #catch this exception
 
   #you can use regexp ^,$,?,* in before-string # {{{
   #エスケープしたくない文字もある
@@ -49,7 +50,7 @@ module RenameUtils# {{{
   end
   # }}}
 
-  # Parse directly arguments
+  # Parse directly arguments.
   def argv_parse(arguments)# {{{
     argv = arguments.dup
     opt = { mode: nil, before: nil, after: '', type: :file, dir: './', } #default values
@@ -122,7 +123,7 @@ module RenameUtils# {{{
     end
   end # }}}
 
-  # safe_rename_pairs!を名前が変更しきれなくなるまで繰り返す
+  # execute safe_rename_pairs! while can rename.
   def recursive_rename!(path_pairs)# {{{
     return true if path_pairs.empty?
 
@@ -151,7 +152,7 @@ if __FILE__ == $0
   #emnurate_targets
   pathes = get_pathes(opt)
 
-  # show rename condidate and get this.
+  # show rename candidate and get it.
   bf_pairs = get_before_after(opt, pathes)
   puts "\n#{bf_pairs.size} names rename"
 

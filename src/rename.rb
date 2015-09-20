@@ -55,7 +55,7 @@ module RenameUtils# {{{
     ARGV[0] = '--help' if ARGV.empty?
     opt = { mode: nil, before: nil, after: '', type: :file, dir: './', } #default values
     parser = OptionParser.new
-    parser.banner = 'Usage: rbrn <mode [args..]> [before] [after] [-t type] [-d dir]'
+    parser.banner = 'Usage: rbrn <mode [args..]> [-t type] [-d dir]'
 
     parser.on('-r BEFORE [AFTER]', HELP_MESSAGE[:replace]) do |before|
       opt[:mode] = :replace

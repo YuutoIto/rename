@@ -106,7 +106,7 @@ module RenameUtils# {{{
     pathes.map! do |path|
       before_name = File.basename(path)
       after_name  = before_name.gsub(regexp, opt[:after])
-      puts "%-32s  =>  %s" % [before_name, after_name]
+      puts "'%-32s' => '%s'" % [before_name, after_name]
 
       next [path, opt[:dir].join(after_name)]
     end

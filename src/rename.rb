@@ -103,16 +103,16 @@ module RenameUtils# {{{
   def get_before_after(opt, pathes)# {{{
     regexp = Regexp.new(simple_escape(opt[:before]))
 
-    pathes.map! do |path|
+    path_pairs = pathes.map do |path|
       before_name = File.basename(path)
       after_name  = before_name.gsub(regexp, opt[:after])
-      puts "'%-32s' => '%s'" % [before_name, after_name]
+      next nil if before_name == after_name
 
+      puts "'%-32s' => '%s'" % [before_name, after_name]
       next [path, opt[:dir].join(after_name)]
     end
 
-    #表示はされるけどリストからは除外
-    return pathes.delete_if {|old, new| old == new }
+    return path_pairs.compact
   end# }}}
 
   #if elements is not deleted return nil.

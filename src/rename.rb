@@ -49,9 +49,11 @@ module RenameUtils# {{{
   end
   # }}}
 
-  # Parse directly ARGV
-  def argv_parse# {{{
-    ARGV[0] = '--help' if ARGV.empty?
+  # Parse directly arguments
+  def argv_parse(arguments)# {{{
+    argv = arguments.dup
+
+    argv[0] = '--help' if argv.empty?
     opt = { mode: nil, before: nil, after: '', type: :file, dir: './', } #default values
     parser = OptionParser.new
     parser.banner = 'Usage: rbrn <mode [args..]> [-t type] [-d dir]'
@@ -73,11 +75,11 @@ module RenameUtils# {{{
       opt[:dir] = dir
     end
 
-    parser.parse!(ARGV)
+    parser.parse!(argv)
 
     # Get after string of the replace mode
-    if opt[:mode] == :replace && !ARGV.empty?
-      opt[:after] = ARGV.shift
+    if opt[:mode] == :replace && !argv.empty?
+      opt[:after] = argv.shift
     end
 
     return opt
@@ -142,7 +144,7 @@ if __FILE__ == $0
   include RenameUtils
 
   #get options
-  opt = argv_parse
+  opt = argv_parse(ARGV)
 
   #emnurate_targets
   pathes = get_pathes(opt)

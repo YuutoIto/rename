@@ -52,8 +52,6 @@ module RenameUtils# {{{
   # Parse directly arguments
   def argv_parse(arguments)# {{{
     argv = arguments.dup
-
-    argv[0] = '--help' if argv.empty?
     opt = { mode: nil, before: nil, after: '', type: :file, dir: './', } #default values
     parser = OptionParser.new
     parser.banner = 'Usage: rbrn <mode [args..]> [-t type] [-d dir]'
@@ -142,6 +140,10 @@ end# }}}
 if __FILE__ == $0
   Version = 2.1
   include RenameUtils
+
+  #preprocessing parse arguments.
+  ARGV[0] = '--help' if ARGV.empty?
+  error('Invalid arguments. need <mode>', 0) unless ARGV.any? {|s| s[0] == '-' }
 
   #get options
   opt = argv_parse(ARGV)

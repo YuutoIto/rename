@@ -8,6 +8,16 @@ class String
   end
 end
 
+def error(message, num)
+  warn "error: #{message}"
+  exit(num)
+end
+
+def goodbye(message)
+  puts message
+  exit(0)
+end
+
 module RenameUtils# {{{
   class RenameRoutineError  < StandardError; end      #code bug
   class RenameStandardError < RenameRoutineError; end #この例外を補足する
@@ -24,17 +34,6 @@ module RenameUtils# {{{
     type: 'The kind of the targets. You ca use file, dir and all.',
     dir: 'Replace target directory',
   }
-
-
-  def error(message, num)
-    warn "error: #{message}"
-    exit(num)
-  end
-
-  def goodbye(message)
-    puts message
-    exit(0)
-  end
 
   #you can use regexp ^,$,?,* in before-string # {{{
   #エスケープしたくない文字もある
@@ -136,7 +135,6 @@ module RenameUtils# {{{
     return recursive_rename!(path_pairs)
   end# }}}
 end# }}}
-
 
 #main-routine
 if __FILE__ == $0

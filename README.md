@@ -1,176 +1,47 @@
-renameはruby2.1以上での動作を確認しています。
+ruby製リネーマー  
+リネーム実行前にリネーム前後のファイル名を出力し、確認プロンプト表示します。  
+リネーム中にファイル名の重複が発生した場合は他のリネームが終了後、再度変更を試みます。
 
-使用方法
-(-h --help に簡易説明あり)
 
-rbrn directory target-string mode [arg]
+#使い方 (-h --help に説明あり)  
 
-    directory       リネーム対象のファイルがあるディレクトリ
-    target-string   ファイル名の変更する部分文字列(置き換え対象)
-    mode [arg]     リネーム方式を指定
+```text
+rbrn <mode [args..]> [-t type] [-d dir]  
+    <mode>                 現在は -r のみ指定可能
+    -r BEFORE [AFTER]      BEFOREをAFTERに変更する、AFTERを省略した場合は削除
+    -t TYPE                対象となるファイルの種類を選択(file,dir,all) default is file
+    -d DIR                 対象となるディレクトリを指定 default is ./
+    -h --help              ヘルプを表示
 
-    target-stringは独自の正規表現の使用が可能
-        ^       target-stringの先頭に使用するとファイル名の先頭にのみマッチするようになる
-        $       target-stringの末尾に使用するとファイル名の末尾にのみマッチするようになる
+    BEFOREは独自の正規表現の使用が可能
+        ^       先頭に使用するとファイル名の先頭にのみマッチするようになる
+        $       末尾に使用するとファイル名の末尾にのみマッチするようになる
         ?       リネーム時に任意の一文字に置き換わる
-        *       置き換え対象を * にマッチした部分にする
+        *       rubyの.*?と同等、任意の文字列にマッチする
+```
     
-    -r STR      target-stringにマッチする文字列をSTRに置き換える
-    -e          target-stringにマッチする文字列を削除する
-    -n [NUM]    target-stringにマッチする文字列をNUMで指定した数値を数え上げした文字列に変更する
-                指定した桁数で全てのファイル名を表現できない場合は自動で桁を合わせる
-                0000 の場合 4桁の0000からの数え上げ
-                50   の場合 2桁の50からの数え上げ
-                未指定の場合自動桁合わせで0からの数え上げ
-
-
 #使用例
 
-#対象ディレクトリ
-sampled
-    WCW000.jpg
-    WCW001.jpg
-    WCW002.jpg
+```shell
+$ ls target_dir
+WCW000.jpg WCW001.jpg WCW002.jpg
+
+$ rbrn -r WCW ACA  
+'WCW000.jpg' => 'ACA000.jpg'
+'WCW001.jpg' => 'ACA001.jpg'
+'WCW002.jpg' => 'ACA002.jpg'
+
+3 names rename
+Rename these? (y/N) y
+
+$ ls target_dir
+ACA000.jpg ACA001.jpg ACA002.jpg
+```
+
+#今後
+* ファイル名に連番を使用できるようにする
+* 対象とする文字列にruby同じ正規表現を使えるようにする
+* 対象とする文字列にvim風のテキストオブジェクトを使えるようにする
+* 変更点などをカラー表示して見やすくする
 
 
-#1 シンプルな置き換え
-rename sampled/ W -r A
-
-sampled
-    ACA000.jpg
-    ACA001.jpg
-    ACA002.jpg
-
-
-#2 ^を使用した先頭のみの置き換え
-rename sampled/ ^W -r A
-
-sampled
-    ACW000.jpg
-    ACW001.jpg
-    ACW002.jpg
-
-
-#3 $を使用した末尾のみの置き換え
-rename sampled/ .jpg$ -r .png
-
-sampled
-    WCW000.png
-    WCW001.png
-    WCW002.png
-
-
-#4 -n を使用したシンプルな数え上げ
-rename sampled/ .jpg -n 00050
-
-sampled
-    WCW0000050
-    WCW0010051
-    WCW0020052
-
-
-#5 *にマッチした部分の置き換え
-rename sampled/ *.jpg -n 0100
-
-sampled
-    WCW0100.jpg
-    WCW0101.jpg
-    WCW0102.jpg
-
-
-#6 *を使用した文字列と文字列の間の文字列の置き換え
-rename sampled/ WCW*.jpg -n 00025
-
-#result
-sampled
-    WCW00025.jpg
-    WCW00026.jpg
-    WCW00027.jpg
-    #ここではtarget-stringに WCW*.jpgを指定してるが,
-    #このようなファイル名の場合本来は ^WCW*.jpg$ と指定するのが好ましい
-
-
-##複雑な使用例
-    以降は変更前のディレクトリ、コマンド、変更後のディレクトリの順で記述
-
-#1 X?Z に当てはまる文字列を全て XYZ に置き換える
-sampled
-    XAZ0
-    XBZ1
-    XCZ2
-
-rename sampled/ X?Z -r XYZ
-
-sampled
-    XYZ0
-    XYZ1
-    XYZ2
-
-#2 ? を複数使用して3文字の拡張子のみを.jpgに揃える($が重要)
-sampled
-    0.png
-    1.jpg
-    2.bmp
-    3.xvsf
-
-rename sampled/ .???$ -r .jpg
-
-sampled
-    0.jpg
-    1.jpg
-    2.jpg
-    3.xvsf
-
-
-#3 2を?ではなく*を使用すると拡張子の文字数に関係なくすべて.jpgになる
-sampled
-    0.png
-    1.jpg
-    2.bmp
-    3.xvsf
-
-rename sampled/ .*$ -r .jpg
-
-sampled
-    0.jpg
-    1.jpg
-    2.jpg
-    3.jpg
-
-
-#4 ?と*を併用する
-sampled
-    A0Bccc.jpg
-    A1Bddd.jpg
-    A2Beee.jpg
-
-rename sampled/ A?B*.jpg -n 40
-
-sampled
-    A0B40.jpg
-    A1B41.jpg
-    A2B42.jpg
-
-#5 *に複数マッチする場合の動作
-sampled
-    AsssBAwwwwB
-
-rename sampled/ A*B -r @
-
-sampled
-    A@BA@B
-
-#6 5で^と$を使用した場合
-sampled
-    AsssBAwwwwB
-
-rename sampled/ ^A*B$ -r @
-
-sampled
-    A@B
-
-
-######
-このようにtarget-stringがファイル名の文字列に複数マッチする場合がるので、
-拡張子を変更するときは $ を、
-先頭の文字列を変更するときは ^ を使用するように心がける

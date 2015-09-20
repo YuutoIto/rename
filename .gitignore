@@ -1,6 +1,1 @@
-.Makefile_*
-makefile
-testd/
-t/
-.*.swp
-./releases/rbrn
+.*.sw?

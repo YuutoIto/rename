@@ -1,6 +1,6 @@
 #main-routineを実行しないようにする
 DO_SPEC = true
-require "../src/rename.rb"
+require "../src/rbrn.rb"
 require "fileutils"
 
 include RenameUtils

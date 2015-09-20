@@ -154,7 +154,9 @@ if __FILE__ == $0
 
   # show rename candidate and get it.
   bf_pairs = get_before_after(opt, pathes)
-  puts "\n#{bf_pairs.size} names rename"
+  puts "\nrename #{bf_pairs.size}/#{pathes.size}"
+
+  exit if bf_pairs.size == 0
 
   print 'Rename these? (y/N) '
   if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp

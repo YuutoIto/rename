@@ -48,7 +48,7 @@ module RenameUtils # {{{
 
   def argv_parse(arguments) # {{{
     argv = arguments.dup
-    opt = { mode: nil, before: nil, after: '', type: :file, dir: './', } #default values
+    opt = { mode: nil, before: nil, after: '', type: :all, dir: './', } #default values
     parser = OptionParser.new
     parser.banner = 'Usage: rbrn <mode [args..]> [-t type] [-d dir]'
 

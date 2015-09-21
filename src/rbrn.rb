@@ -134,7 +134,7 @@ end # }}}
 
 #main-routine
 if __FILE__ == $0
-  Version = 2.2
+  Version = 2.3
   include RenameUtils
 
   #preprocessing parse arguments.

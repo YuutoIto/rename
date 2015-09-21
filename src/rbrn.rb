@@ -32,7 +32,7 @@ HELP_MESSAGE = {
 }
 
 
-module RenameUtils# {{{
+module RenameUtils # {{{
   class RenameRoutineError  < StandardError; end      #code bug
   class RenameStandardError < RenameRoutineError; end #catch this exception
 
@@ -50,8 +50,7 @@ module RenameUtils# {{{
   end
   # }}}
 
-  # Parse directly arguments.
-  def argv_parse(arguments)# {{{
+  def argv_parse(arguments) # {{{
     argv = arguments.dup
     opt = { mode: nil, before: nil, after: '', type: :file, dir: './', } #default values
     parser = OptionParser.new
@@ -76,7 +75,7 @@ module RenameUtils# {{{
 
     parser.parse!(argv)
 
-    # Get after string of the replace mode
+    #get after string of the replace mode
     if opt[:mode] == :replace && !argv.empty?
       opt[:after] = argv.shift
     end
@@ -84,9 +83,9 @@ module RenameUtils# {{{
     return opt
   rescue OptionParser::MissingArgument, OptionParser::InvalidOption=> ex
     error(ex.message, 13)
-  end# }}}
+  end # }}}
 
-  def get_pathes(opt)# {{{
+  def get_pathes(opt) # {{{
     error("#{opt[:dir]} is not exist.", 30) unless Dir.exist?(opt[:dir])
 
     pathes = Dir.glob(opt[:dir].join("*"))
@@ -99,10 +98,10 @@ module RenameUtils# {{{
     exit(0) if pathes.empty?
 
     return pathes.sort_by! { |path| File.basename(path) }
-  end# }}}
+  end # }}}
 
-  def get_before_after(opt, pathes)# {{{
     regexp = Regexp.new(simple_escape(opt[:before]))
+  def get_before_after(opt, pathes) # {{{
 
     path_pairs = pathes.map do |path|
       before_name = File.basename(path)
@@ -114,7 +113,7 @@ module RenameUtils# {{{
     end
 
     return path_pairs.compact
-  end# }}}
+  end # }}}
 
   #if elements is not deleted return nil.
   def safe_rename_pairs!(path_pairs) # {{{
@@ -123,8 +122,8 @@ module RenameUtils# {{{
     end
   end # }}}
 
-  # execute safe_rename_pairs! while can rename.
-  def recursive_rename!(path_pairs)# {{{
+  #execute safe_rename_pairs! while can rename.
+  def recursive_rename!(path_pairs) # {{{
     return true if path_pairs.empty?
 
     unless safe_rename_pairs!(path_pairs)
@@ -134,8 +133,8 @@ module RenameUtils# {{{
     end
 
     return recursive_rename!(path_pairs)
-  end# }}}
-end# }}}
+  end # }}}
+end # }}}
 
 #main-routine
 if __FILE__ == $0
@@ -152,7 +151,7 @@ if __FILE__ == $0
   #emnurate_targets
   pathes = get_pathes(opt)
 
-  # show rename candidate and get it.
+  #show rename candidate and get it.
   bf_pairs = get_before_after(opt, pathes)
   puts "\nrename #{bf_pairs.size}/#{pathes.size}"
 

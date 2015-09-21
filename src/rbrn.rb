@@ -31,24 +31,20 @@ HELP_MESSAGE = {
   dir: 'Replace target directory',
 }
 
+ORIGIANL_REGEXP = {
+  '%b' => '\s*(\(.*?\)|\[.*?\]|\{.*?\})\s*', # all blocks
+  '%B' => '[(\[{}\])]',
+}
 
 module RenameUtils # {{{
   class RenameRoutineError  < StandardError; end      #code bug
   class RenameStandardError < RenameRoutineError; end #catch this exception
 
-  #you can use regexp ^,$,?,* in before-string # {{{
-  #エスケープしたくない文字もある
-  def simple_escape!(str)
-    '(){}[]+.'.each_char {|c| str.gsub!(c, '\\'+c) }
-    str.gsub!('?', '.')
-    str.gsub!('*', '.*?')
-    return str
-  end
-
-  def simple_escape(str)
-    simple_escape!(str.dup)
-  end
-  # }}}
+  def get_regexp(str) # {{{
+    regex_str = str.dup
+    ORIGIANL_REGEXP.each {|k,v| regex_str.gsub!(k, v) }
+    return Regexp.new(regex_str)
+  end # }}}
 
   def argv_parse(arguments) # {{{
     argv = arguments.dup
@@ -100,8 +96,8 @@ module RenameUtils # {{{
     return pathes.sort_by! { |path| File.basename(path) }
   end # }}}
 
-    regexp = Regexp.new(simple_escape(opt[:before]))
   def get_before_after(opt, pathes) # {{{
+    regexp = get_regexp(opt[:before])
 
     path_pairs = pathes.map do |path|
       before_name = File.basename(path)

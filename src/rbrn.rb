@@ -144,7 +144,7 @@ if __FILE__ == $0
   #get options
   opt = argv_parse(ARGV)
 
-  #emnurate_targets
+  #enumerate_targets
   pathes = get_pathes(opt)
 
   #show rename candidate and get it.

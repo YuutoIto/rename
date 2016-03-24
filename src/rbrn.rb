@@ -22,13 +22,13 @@ ERROR_MESSAGE = {
   enough:  'Not enough arguments.',
   many:    'Too many arguments.',
   onlyone: 'Can be specified rename-option is only one.',
-  type: 'Invalid type, You can use file, dir and all. The default is file.',
+  type: 'Invalid type, Choose from file, dir and all.',
 }
 
 HELP_MESSAGE = {
-  replace: 'replace before to after. The default value of after is empty string.',
-  type: 'The kind of the targets. You ca use file, dir and all.',
-  dir: 'Replace target directory',
+  replace: 'Replace BEFORE to AFTER. If AFTER is not set, remove BEFORE.',
+  type: 'Set rename targets kind from file, dir and all. Default value is all.',
+  dir: 'Replace target directory. Default value is ./',
 }
 
 ORIGIANL_REGEXP = {

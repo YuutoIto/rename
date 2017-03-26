@@ -32,16 +32,20 @@ ERROR_MESSAGE = {
 }
 
 HELP_MESSAGE = {
-  replace: 'Replace BEFORE to AFTER. If AFTER is not set, remove BEFORE.',
-  type: 'Set rename targets kind from file, dir and all. Default value is all.',
-  dir: 'Replace target directory. Default value is ./',
-  select: "Select file and directory with regexp. Default value is ''",
-  reject: "Reject file and directory with regexp. Default value is ''",
+  replace: ["Replace /BEFORE/ to 'AFTER' with String#gsub.",
+            "If 'AFTER' is not set, remove /BEFORE/.",
+            "You can use special regexps"],
+  type: 'Set rename target type. (all)',
+  dir: 'Replace target directory. (./)',
+  select: 'Select file and directory with regexp. (//)',
+  reject: 'Reject file and directory with regexp. (//)',
+  special_regexp: ["%b\t All strings in () [] {}",
+                   "%B\t Any one of () [] {}"]
 }
 
 ORIGIANL_REGEXP = {
   '%b' => '\s*(\(.*?\)|\[.*?\]|\{.*?\})\s*', # all blocks
-  '%B' => '[(\[{}\])]',
+  '%B' => '[(){}\[\]]', # any block
 }
 
 module RenameUtils # {{{
@@ -60,30 +64,23 @@ module RenameUtils # {{{
     parser = OptionParser.new
     parser.banner = 'Usage: rbrn <mode [args..]> [-t type] [-d dir] [-s select] [-j reject]'
 
-    parser.on('-r BEFORE [AFTER]', HELP_MESSAGE[:replace]) do |before|
+    parser.separator 'Mode options'
+    parser.on('-r BEFORE [AFTER]', *HELP_MESSAGE[:replace]) do |before|
       opt[:mode] = :replace
       opt[:before] = before
     end
 
-    parser.on('-t TYPE', HELP_MESSAGE[:type]) do |type|
-      if /^(file|dir|all)$/ =~ type
-        opt[:type] = type.to_sym
-      else
-        error(ERROR_MESSAGE[:type], 12)
-      end
-    end
+    parser.separator ''
+    parser.separator 'Other options'
 
-    parser.on('-d DIR', HELP_MESSAGE[:dir]) do |dir|
-      opt[:dir] = dir
-    end
+    parser.on('-t TYPE', [:file, :dir, :all], HELP_MESSAGE[:type]){|type| opt[:type] = type}
+    parser.on('-d DIR', HELP_MESSAGE[:dir]){|dir| opt[:dir] = dir}
+    parser.on('-s REGEXP', Regexp, HELP_MESSAGE[:select]){|select| opt[:select] = select}
+    parser.on('-j REGEXP', Regexp, HELP_MESSAGE[:reject]){|reject| opt[:reject] = reject}
 
-    parser.on('-s select', HELP_MESSAGE[:select]) do |select|
-      opt[:select] = Regexp.new(select)
-    end
-
-    parser.on('-j reject', HELP_MESSAGE[:reject]) do |reject|
-      opt[:reject] = Regexp.new(reject)
-    end
+    parser.separator ''
+    parser.separator 'Special regexp'
+    parser.on_tail(*(HELP_MESSAGE[:special_regexp].map{|s| parser.summary_indent+s}))
 
     parser.parse!(argv)
 

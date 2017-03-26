@@ -14,6 +14,16 @@ class Hash
   end
 end
 
+class OptionParser
+  attr_accessor :dest_hash
+  attr_accessor :message_list
+
+  def to_hash(key, *args, &block)
+    block = lambda{|v| dest_hash[key] = v} unless block_given?
+    on(*args, *message_list[key], block)
+  end
+end
+
 def error(message, num)
   warn "error: #{message}"
   exit(num)
@@ -32,19 +42,20 @@ ERROR_MESSAGE = {
 }
 
 HELP_MESSAGE = {
+  banner: "Usage: #{File.basename($0)} <mode [args...]> [-t type] [-d dir] [-s select] [-j reject]",
   replace: ["Replace /BEFORE/ to 'AFTER' with String#gsub.",
-            "If 'AFTER' is not set, remove /BEFORE/.",
-            "You can use special regexps"],
+            "If 'AFTER' is empty, remove /BEFORE/.",
+            "You can use special regexps in /BEFORE/."],
   type: 'Set rename target type. (all)',
   dir: 'Replace target directory. (./)',
   select: 'Select file and directory with regexp. (//)',
   reject: 'Reject file and directory with regexp. (//)',
   special_regexp: ["%b\t All strings in () [] {}",
-                   "%B\t Any one of () [] {}"]
+                   "%B\t Any one of () [] {}"],
 }
 
 ORIGIANL_REGEXP = {
-  '%b' => '\s*(\(.*?\)|\[.*?\]|\{.*?\})\s*', # all blocks
+  '%b' => '\s*(\(.*?\)|\[.*?\]|\{.*?\})\s*', # strings in all blocks
   '%B' => '[(){}\[\]]', # any block
 }
 
@@ -62,24 +73,20 @@ module RenameUtils # {{{
     argv = arguments.dup
     opt = { mode: nil, before: nil, after: '', type: :all, dir: './', } #default values
     parser = OptionParser.new
-    parser.banner = 'Usage: rbrn <mode [args..]> [-t type] [-d dir] [-s select] [-j reject]'
+    parser.message_list = HELP_MESSAGE
+    parser.dest_hash = opt
+    parser.banner = HELP_MESSAGE[:banner]
 
-    parser.separator 'Mode options'
-    parser.on('-r BEFORE [AFTER]', *HELP_MESSAGE[:replace]) do |before|
-      opt[:mode] = :replace
-      opt[:before] = before
-    end
+    parser.separator ['', 'Mode options']
+    parser.to_hash(:replace, '-r BEFORE [AFTER]'){|before| opt.update(mode: :replace, before: before)}
 
-    parser.separator ''
-    parser.separator 'Other options'
+    parser.separator ['', 'Other options']
+    parser.to_hash(:type, '-t file|dir|all', [:file, :dir, :all])
+    parser.to_hash(:dir, '-d DIR')
+    parser.to_hash(:select, '-s REGEXP', Regexp)
+    parser.to_hash(:reject, '-j REGEXP', Regexp)
 
-    parser.on('-t TYPE', [:file, :dir, :all], HELP_MESSAGE[:type]){|type| opt[:type] = type}
-    parser.on('-d DIR', HELP_MESSAGE[:dir]){|dir| opt[:dir] = dir}
-    parser.on('-s REGEXP', Regexp, HELP_MESSAGE[:select]){|select| opt[:select] = select}
-    parser.on('-j REGEXP', Regexp, HELP_MESSAGE[:reject]){|reject| opt[:reject] = reject}
-
-    parser.separator ''
-    parser.separator 'Special regexp'
+    parser.separator ['', 'Special regexp']
     parser.on_tail(*(HELP_MESSAGE[:special_regexp].map{|s| parser.summary_indent+s}))
 
     parser.parse!(argv)

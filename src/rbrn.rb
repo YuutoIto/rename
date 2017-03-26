@@ -46,7 +46,7 @@ module RenameUtils # {{{
     return Regexp.new(regex_str)
   end # }}}
 
-  def argv_parse(arguments) # {{{
+  def parse_argv(arguments) # {{{
     argv = arguments.dup
     opt = { mode: nil, before: nil, after: '', type: :all, dir: './', } #default values
     parser = OptionParser.new
@@ -132,29 +132,29 @@ module RenameUtils # {{{
   end # }}}
 end # }}}
 
-#main-routine
-if __FILE__ == $0
-  Version = 2.3
-  include RenameUtils
+return unless __FILE__ == $0
 
-  #preprocessing parse arguments.
-  ARGV[0] = '--help' if ARGV.empty?
-  error('Invalid arguments. need <mode>', 0) unless ARGV.any? {|s| s[0] == '-' }
+#main routine
+Version = 2.3
+include RenameUtils
 
-  #get options
-  opt = argv_parse(ARGV)
+#preprocessing to parse arguments.
+ARGV[0] = '--help' if ARGV.empty?
+error('Invalid arguments. need <mode>', 0) unless ARGV.any? {|s| s[0] == '-' }
 
-  #enumerate_targets
-  pathes = get_pathes(opt)
+#get options
+opt = parse_argv(ARGV)
 
-  #show rename candidate and get it.
-  bf_pairs = get_before_after(opt, pathes)
-  puts "\nrename #{bf_pairs.size}/#{pathes.size}"
+#enumerate_targets
+pathes = get_pathes(opt)
 
-  exit if bf_pairs.size == 0
+#show rename candidate and get it.
+bf_pairs = get_before_after(opt, pathes)
+puts "\nrename #{bf_pairs.size}/#{pathes.size}"
 
-  print 'Rename these? (y/N) '
-  if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
-    recursive_rename!(bf_pairs)
-  end
+exit if bf_pairs.size == 0
+
+print 'Rename these? (y/N) '
+if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
+  recursive_rename!(bf_pairs)
 end

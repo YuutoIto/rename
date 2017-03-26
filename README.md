@@ -1,41 +1,53 @@
-ruby製リネーマー  
-リネーム実行前にリネーム前後のファイル名を出力し、確認プロンプト表示します。  
-リネーム中にファイル名が重複がした場合は、先に他のリネームを実行し、終了後に再度変更を試みます。  
-rubyの正規表現がそのまま使用可能です('()'や'\1'の使用も可能)。  
+#ruby製リネーマー  
+
+##Features
+* リネーム実行前に確認プロンプト表示
+* ファイル名が重複した場合、1週した後に再実行
+* Rubyの正規表現がそのまま使える('()'や'\1'で文字列の使い回し可能)
+* 置換に独自の正規表現が使用可能(Special regexp)
 
 
-#使い方
+##Usage
 
 ```text
-rbrn <mode [args..]> [-t type] [-d dir]  
-    <mode>                 現在は -r のみ指定可能
-    -r BEFORE [AFTER]      BEFOREをAFTERに変更する、AFTERを省略した場合は削除
-    -t TYPE                対象となるファイルの種類を選択(file,dir,all) デフォルトは all
-    -d DIR                 対象となるディレクトリを指定 デフォルトは ./
-    -h --help              ヘルプを表示
+Usage: rbrn <mode [args...]> [-t type] [-d dir] [-s select] [-j reject]
+
+Mode options
+    -r BEFORE [AFTER]                Replace /BEFORE/ to 'AFTER' with String#gsub.
+                                     If 'AFTER' is empty, remove /BEFORE/.
+                                     You can use special regexps in /BEFORE/.
+
+Other options
+    -t file|dir|all                  Set rename target type. (all)
+    -d DIR                           Replace target directory. (./)
+    -s REGEXP                        Select file and directory with regexp. (//)
+    -j REGEXP                        Reject file and directory with regexp. (//)
+
+Special regexp
+    %b	 All strings in () [] {}
+    %B	 Any one of () [] {}
 ```
-    
-#使用例
+
+
+##Example
 
 ```shell
 $ ls target_dir
-WCW000.jpg WCW001.jpg WCW002.jpg
+A0.jpg A1.jpg A2.jpg
 
-$ rbrn -r WCW ACA  
-'WCW000.jpg' => 'ACA000.jpg'
-'WCW001.jpg' => 'ACA001.jpg'
-'WCW002.jpg' => 'ACA002.jpg'
+$ rbrn -r A B
+'A0.jpg' => 'B0.jpg'
+'A1.jpg' => 'B1.jpg'
+'A2.jpg' => 'B2.jpg'
 
 3 names rename
 Rename these? (y/N) y
 
 $ ls target_dir
-ACA000.jpg ACA001.jpg ACA002.jpg
+B0.jpg B1.jpg B2.jpg
 ```
 
-#今後
+##Todo
 * ファイル名に連番を使用できるようにする
-* 対象とする文字列にvim風のテキストオブジェクトを使えるようにする
 * 変更点などをカラー表示して見やすくする
-
-
+* 設定ファイルから独自正規表現を読み込む

@@ -97,15 +97,15 @@ module RenameUtils # {{{
     pathes = Dir.glob(opt[:dir].join("*"))
     case opt[:type]
     when :file
-      pathes.select!{ |path| File.file?(path) }
+      pathes.select!{|path| File.file?(path) }
     when :dir
-      pathes.select!{ |path| File.directory?(path) }
+      pathes.select!{|path| File.directory?(path) }
     end
-    exit(0) if pathes.empty?
     pathes.select!{|path| opt[:select] =~ path} if opt[:select]
     pathes.reject!{|path| opt[:reject] =~ path} if opt[:reject]
+    exit 0 if pathes.empty?
 
-    return pathes.sort_by! { |path| File.basename(path) }
+    return pathes.sort_by!{|path| File.basename(path) }
   end # }}}
 
   def get_before_after(opt, pathes) # {{{
@@ -149,15 +149,12 @@ return unless __FILE__ == $0
 #main routine
 Version = 2.3
 include RenameUtils
+$VERBOSE = (ENV['DEBUG'].to_i == 0)? nil : true
 
 #preprocessing to parse arguments.
 ARGV[0] = '--help' if ARGV.empty?
-error('Invalid arguments. need <mode>', 0) unless ARGV.any? {|s| s[0] == '-' }
 
-#get options
-opt = parse_argv(ARGV)
-
-#enumerate_targets
+warn opt = parse_argv(ARGV)
 pathes = get_pathes(opt)
 
 #show rename candidate and get it.

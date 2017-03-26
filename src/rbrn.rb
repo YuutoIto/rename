@@ -29,6 +29,8 @@ HELP_MESSAGE = {
   replace: 'Replace BEFORE to AFTER. If AFTER is not set, remove BEFORE.',
   type: 'Set rename targets kind from file, dir and all. Default value is all.',
   dir: 'Replace target directory. Default value is ./',
+  select: "Select file and directory with regexp. Default value is ''",
+  reject: "Reject file and directory with regexp. Default value is ''",
 }
 
 ORIGIANL_REGEXP = {
@@ -50,7 +52,7 @@ module RenameUtils # {{{
     argv = arguments.dup
     opt = { mode: nil, before: nil, after: '', type: :all, dir: './', } #default values
     parser = OptionParser.new
-    parser.banner = 'Usage: rbrn <mode [args..]> [-t type] [-d dir]'
+    parser.banner = 'Usage: rbrn <mode [args..]> [-t type] [-d dir] [-s select] [-j reject]'
 
     parser.on('-r BEFORE [AFTER]', HELP_MESSAGE[:replace]) do |before|
       opt[:mode] = :replace
@@ -67,6 +69,14 @@ module RenameUtils # {{{
 
     parser.on('-d DIR', HELP_MESSAGE[:dir]) do |dir|
       opt[:dir] = dir
+    end
+
+    parser.on('-s select', HELP_MESSAGE[:select]) do |select|
+      opt[:select] = Regexp.new(select)
+    end
+
+    parser.on('-j reject', HELP_MESSAGE[:reject]) do |reject|
+      opt[:reject] = Regexp.new(reject)
     end
 
     parser.parse!(argv)
@@ -92,6 +102,8 @@ module RenameUtils # {{{
       pathes.select!{ |path| File.directory?(path) }
     end
     exit(0) if pathes.empty?
+    pathes.select!{|path| opt[:select] =~ path} if opt[:select]
+    pathes.reject!{|path| opt[:reject] =~ path} if opt[:reject]
 
     return pathes.sort_by! { |path| File.basename(path) }
   end # }}}

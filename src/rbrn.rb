@@ -8,6 +8,12 @@ class String
   end
 end
 
+class Hash
+  def in?(*keys)
+    keys.any?{|k| has_key?(k)}
+  end
+end
+
 def error(message, num)
   warn "error: #{message}"
   exit(num)
@@ -86,6 +92,7 @@ module RenameUtils # {{{
       opt[:after] = argv.shift
     end
 
+    opt[:mode] = :show if opt[:mode].nil? && opt.in?(:select, :reject)
     return opt
   rescue OptionParser::MissingArgument, OptionParser::InvalidOption=> ex
     error(ex.message, 13)
@@ -157,13 +164,18 @@ ARGV[0] = '--help' if ARGV.empty?
 warn opt = parse_argv(ARGV)
 pathes = get_pathes(opt)
 
-#show rename candidate and get it.
-bf_pairs = get_before_after(opt, pathes)
-puts "\nrename #{bf_pairs.size}/#{pathes.size}"
+case opt[:mode]
+when :show
+  pathes.each{|path| puts "'%s'" % File.basename(path)}
+when :replace
+  #show rename candidate and get it.
+  bf_pairs = get_before_after(opt, pathes)
+  puts "\nrename #{bf_pairs.size}/#{pathes.size}"
 
-exit if bf_pairs.size == 0
+  exit if bf_pairs.size == 0
 
-print 'Rename these? (y/N) '
-if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
-  recursive_rename!(bf_pairs)
+  print 'Rename these? (y/N) '
+  if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
+    recursive_rename!(bf_pairs)
+  end
 end

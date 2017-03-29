@@ -158,7 +158,7 @@ end # }}}
 return unless __FILE__ == $0
 
 #main routine
-Version = 2.3
+Version = 2.4
 include RenameUtils
 $VERBOSE = (ENV['DEBUG'].to_i == 0)? nil : true
 

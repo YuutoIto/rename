@@ -57,6 +57,7 @@ HELP_MESSAGE = {
 ORIGIANL_REGEXP = {
   '%b' => '\s*(\(.*?\)|\[.*?\]|\{.*?\})\s*', # strings in all blocks
   '%B' => '[(){}\[\]]', # any block
+  '%N' => '^\d+(\.|\s*-)?\s*'
 }
 
 module RenameUtils # {{{

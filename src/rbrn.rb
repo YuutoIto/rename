@@ -61,18 +61,18 @@ ORIGIANL_REGEXP = {
   '%N' => '^\d+(\.|\s*-)?\s*'
 }
 
-module RenameUtils # {{{
+module RenameUtils
   class RenameRoutineError  < StandardError; end      #code bug
   class RenameStandardError < RenameRoutineError; end #catch this exception
 
-  def get_regexp(str, raw = nil) # {{{
+  def get_regexp(str, raw = nil)
     regex_str = str.dup
     regex_str = Regexp.escape(regex_str) if raw
     ORIGIANL_REGEXP.each {|k,v| regex_str.gsub!(k, v) }
     return Regexp.new(regex_str)
-  end # }}}
+  end
 
-  def parse_argv(arguments) # {{{
+  def parse_argv(arguments)
     argv = arguments.dup
     opt = { mode: nil, before: nil, after: '', type: :all, dir: './', } #default values
     parser = OptionParser.new
@@ -95,7 +95,7 @@ module RenameUtils # {{{
 
     parser.parse!(argv)
 
-    #get after string of the replace mode
+    # get after string of the replace mode
     if opt[:mode] == :replace && !argv.empty?
       opt[:after] = argv.shift
     end
@@ -104,9 +104,9 @@ module RenameUtils # {{{
     return opt
   rescue OptionParser::MissingArgument, OptionParser::InvalidOption=> ex
     error(ex.message, 13)
-  end # }}}
+  end
 
-  def get_pathes(opt) # {{{
+  def get_pathes(opt)
     error("#{opt[:dir]} is not exist.", 30) unless Dir.exist?(opt[:dir])
 
     pathes = Dir.glob(opt[:dir].join("*"))
@@ -121,9 +121,9 @@ module RenameUtils # {{{
     exit 0 if pathes.empty?
 
     return pathes.sort_by!{|path| File.basename(path) }
-  end # }}}
+  end
 
-  def get_before_after(opt, pathes) # {{{
+  def get_before_after(opt, pathes)
     regexp = get_regexp(opt[:before], opt[:raw])
 
     path_pairs = pathes.map do |path|
@@ -136,17 +136,17 @@ module RenameUtils # {{{
     end
 
     return path_pairs.compact
-  end # }}}
+  end
 
   #if elements is not deleted return nil.
-  def safe_rename_pairs!(path_pairs) # {{{
+  def safe_rename_pairs!(path_pairs)
     return path_pairs.reject! do |old, new|
       next !File.exist?(new) && File.rename(old, new)
     end
-  end # }}}
+  end
 
   #execute safe_rename_pairs! while can rename.
-  def recursive_rename!(path_pairs) # {{{
+  def recursive_rename!(path_pairs)
     return true if path_pairs.empty?
 
     unless safe_rename_pairs!(path_pairs)
@@ -156,8 +156,8 @@ module RenameUtils # {{{
     end
 
     return recursive_rename!(path_pairs)
-  end # }}}
-end # }}}
+  end
+end
 
 return unless __FILE__ == $0
 

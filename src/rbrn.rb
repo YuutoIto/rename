@@ -50,6 +50,7 @@ HELP_MESSAGE = {
   dir: 'Replace target directory. (./)',
   select: 'Select file and directory with regexp. (//)',
   reject: 'Reject file and directory with regexp. (//)',
+  raw: 'Match without regexp',
   special_regexp: ["%b\t All strings in () [] {}",
                    "%B\t Any one of () [] {}"],
 }
@@ -64,8 +65,9 @@ module RenameUtils # {{{
   class RenameRoutineError  < StandardError; end      #code bug
   class RenameStandardError < RenameRoutineError; end #catch this exception
 
-  def get_regexp(str) # {{{
+  def get_regexp(str, raw = nil) # {{{
     regex_str = str.dup
+    regex_str = Regexp.escape(regex_str) if raw
     ORIGIANL_REGEXP.each {|k,v| regex_str.gsub!(k, v) }
     return Regexp.new(regex_str)
   end # }}}
@@ -86,6 +88,7 @@ module RenameUtils # {{{
     parser.to_hash(:dir, '-d DIR')
     parser.to_hash(:select, '-s REGEXP', Regexp)
     parser.to_hash(:reject, '-j REGEXP', Regexp)
+    parser.to_hash(:raw, '-R', '--raw', TrueClass)
 
     parser.separator ['', 'Special regexp']
     parser.on_tail(*(HELP_MESSAGE[:special_regexp].map{|s| parser.summary_indent+s}))
@@ -121,7 +124,7 @@ module RenameUtils # {{{
   end # }}}
 
   def get_before_after(opt, pathes) # {{{
-    regexp = get_regexp(opt[:before])
+    regexp = get_regexp(opt[:before], opt[:raw])
 
     path_pairs = pathes.map do |path|
       before_name = File.basename(path)

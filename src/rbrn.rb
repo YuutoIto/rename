@@ -161,12 +161,13 @@ return unless __FILE__ == $0
 #main routine
 Version = 2.4
 include RenameUtils
-$VERBOSE = (ENV['DEBUG'].to_i == 0)? nil : true
+$VERBOSE = (ENV['DEBUG'].to_i != 0)? true : nil
 
 #preprocessing to parse arguments.
 ARGV[0] = '--help' if ARGV.empty?
 
-warn opt = parse_argv(ARGV)
+opt = parse_argv(ARGV)
+warn opt&.inspect
 pathes = get_pathes(opt)
 
 case opt[:mode]

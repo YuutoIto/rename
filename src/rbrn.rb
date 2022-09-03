@@ -74,7 +74,7 @@ module RenameUtils
 
   def parse_argv(arguments)
     argv = arguments.dup
-    opt = { mode: nil, before: nil, after: '', type: :all, dir: './', } #default values
+    opt = { mode: nil, before: nil, after: '', type: :all, dir: './', yes: false } #default values
     parser = OptionParser.new
     parser.message_list = HELP_MESSAGE
     parser.dest_hash = opt
@@ -89,6 +89,7 @@ module RenameUtils
     parser.to_hash(:select, '-s REGEXP', Regexp)
     parser.to_hash(:reject, '-j REGEXP', Regexp)
     parser.to_hash(:raw, '-R', '--raw', TrueClass)
+    parser.to_hash(:yes, '-y', '--yes', TrueClass)
 
     parser.separator ['', 'Special regexp']
     parser.on_tail(*(HELP_MESSAGE[:special_regexp].map{|s| parser.summary_indent+s}))
@@ -184,7 +185,7 @@ when :replace
   exit if bf_pairs.size == 0
 
   print 'Rename these? (y/N) '
-  if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
+  if opt[:yes] ||  /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
     recursive_rename!(bf_pairs)
   end
 end

@@ -184,8 +184,12 @@ when :replace
 
   exit if bf_pairs.size == 0
 
-  print 'Rename these? (y/N) '
-  if opt[:yes] ||  /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
+  if opt[:yes]
     recursive_rename!(bf_pairs)
+  else
+    print 'Rename? (y/N) '
+    if /^(Y|YES)$/i =~ STDIN.gets.to_s.chomp
+      recursive_rename!(bf_pairs)
+    end
   end
 end
